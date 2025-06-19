@@ -44,6 +44,11 @@ server.post("/admin/collections/:name", (req, res) => {
   // Optionally, persist changes to disk immediately
   fs.writeFileSync(dbFile, JSON.stringify(db.getState(), null, 2));
 
+  // Recreate the router and re-mount it
+  const newRouter = jsonServer.router(dbFile);
+  server._router.stack = server._router.stack.filter(layer => !(layer && layer.name === "router"));
+  server.use(newRouter);
+
   res.status(201).jsonp({ message: `Collection '${collectionName}' created.` });
 });
 
