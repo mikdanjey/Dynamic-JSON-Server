@@ -4,25 +4,40 @@ const cors = require("cors");
 const jsonServer = require("json-server");
 
 const server = jsonServer.create();
-const router = jsonServer.router("db.json");
-const middlewares = jsonServer.defaults();
 
 const dbFile = path.join(__dirname, "db.json");
+const router = jsonServer.router(dbFile);
 
+const middlewares = jsonServer.defaults();
+
+server.use(cors("*"));
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
-server.use(cors());
+
+// Add custom routes before JSON Server router
+server.get("/echo", (req, res) => {
+  res.jsonp(req.query);
+});
+
+server.use((req, res, next) => {
+  if (req.method === "POST") {
+    req.body.createdAt = Date.now();
+  }
+  next();
+});
+
 // GET full DB
 server.get("/db", (req, res) => {
   res.json(router.db.getState());
 });
 
+// GET /admin/collections
 server.get("/admin/collections", (req, res) => {
   const collections = Object.keys(router.db.getState());
   res.jsonp(collections);
 });
 
-// POST /collections/:name → dynamically add new collection
+// POST /admin/collections/:name → dynamically add new collection
 server.post("/admin/collections/:name", (req, res) => {
   const collectionName = req.params.name;
   const db = router.db; // Lowdb instance
@@ -52,7 +67,7 @@ server.post("/admin/collections/:name", (req, res) => {
   res.status(201).jsonp({ message: `Collection '${collectionName}' created.` });
 });
 
-// DELETE /collections/:name → delete a collection from db.json
+// DELETE /admin/collections/:name → delete a collection from db.json
 server.delete("/admin/collections/:name", (req, res) => {
   const collectionName = req.params.name;
   const db = router.db; // Lowdb instance
