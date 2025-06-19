@@ -18,6 +18,12 @@ yarn dev
 sudo npm install -g pm2
 ```
 
+### Reset the DB
+
+```bash
+cp db-empty-reset.json db.json
+```
+
 ### Run in Prod Mode
 
 ```bash
