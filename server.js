@@ -14,23 +14,23 @@ server.use(cors("*"));
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
-server.use((req, res, next) => {
-  const isObject = obj => typeof obj === "object" && obj !== null;
+// server.use((req, res, next) => {
+//   const isObject = obj => typeof obj === "object" && obj !== null;
 
-  if (["POST", "PUT", "PATCH"].includes(req.method)) {
-    const now = new Date().toISOString();
+//   if (["POST", "PUT", "PATCH"].includes(req.method)) {
+//     const now = new Date().toISOString();
 
-    if (Array.isArray(req.body)) {
-      req.body = req.body.map(item => (isObject(item) ? { ...item, ...(req.method === "POST" ? { createdAt: now } : {}), updatedAt: now } : item));
-    } else if (isObject(req.body)) {
-      if (req.method === "POST" && !req.body.createdAt) {
-        req.body.createdAt = now;
-      }
-      req.body.updatedAt = now;
-    }
-  }
-  next();
-});
+//     if (Array.isArray(req.body)) {
+//       req.body = req.body.map(item => (isObject(item) ? { ...item, ...(req.method === "POST" ? { createdAt: now } : {}), updatedAt: now } : item));
+//     } else if (isObject(req.body)) {
+//       if (req.method === "POST" && !req.body.createdAt) {
+//         req.body.createdAt = now;
+//       }
+//       req.body.updatedAt = now;
+//     }
+//   }
+//   next();
+// });
 
 server.get("/admin/echo", (req, res) => {
   res.jsonp(req.query);
