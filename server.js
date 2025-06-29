@@ -68,7 +68,7 @@ server.post("/admin/collections/:name", (req, res) => {
   }
 
   // Create new collection with optional initial data or empty array
-  const initialData = Array.isArray(req.body) ? req.body : [];
+  const initialData = Array.isArray(req.body) ? req.body : typeof req.body === "object" && req.body !== null ? [req.body] : [];
   db.set(collectionName, initialData).write();
 
   // Optionally, persist changes to disk immediately
