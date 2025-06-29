@@ -28,7 +28,8 @@ server.use((req, res, next) => {
 
 // GET full DB
 server.get("/db", (req, res) => {
-  res.json(router.db.getState());
+  const freshRouter = jsonServer.router(dbFile);
+  res.json(freshRouter.db.getState());
 });
 
 // GET /admin/collections
