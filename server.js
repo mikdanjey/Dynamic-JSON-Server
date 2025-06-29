@@ -13,6 +13,7 @@ const middlewares = jsonServer.defaults();
 
 const NODE_PORT = process.env.NODE_PORT || 8000;
 
+const ENABLE_BASIC_AUTH = process.env.ENABLE_BASIC_AUTH === "true";
 const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME || "admin";
 const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD || "admin";
 
@@ -45,8 +46,10 @@ server.use(cors("*"));
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
-// Basic Auth for all routes
-server.use(basicAuth);
+if (ENABLE_BASIC_AUTH) {
+  // Basic Auth for all routes
+  server.use(basicAuth);
+}
 
 server.use((req, res, next) => {
   const isObject = obj => typeof obj === "object" && obj !== null;
