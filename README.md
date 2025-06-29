@@ -6,6 +6,12 @@
 yarn install
 ```
 
+### Update the .env
+
+```bash
+cp .env.example .env
+```
+
 ### Run in Dev Mode
 
 ```bash
@@ -45,10 +51,7 @@ GET http://localhost:8000/admin/collections
 POST http://localhost:8000/admin/collections/products
 
 ```json
-[
-  { "name": "Laptop", "price": 1000 },
-  { "name": "Mouse", "price": 20 }
-]
+{ "name": "Laptop", "price": 1000 }
 ```
 
 ### Delete the existing Collection
