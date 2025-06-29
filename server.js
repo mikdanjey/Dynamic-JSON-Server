@@ -69,18 +69,18 @@ server.use((req, res, next) => {
   next();
 });
 
+// GET full DB
+server.get("/db", (req, res) => {
+  const freshRouter = jsonServer.router(dbFile);
+  res.json(freshRouter.db.getState());
+});
+
 server.get("/admin/echo", (req, res) => {
   res.jsonp(req.query);
 });
 
 server.get("/admin/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
-});
-
-// GET full DB
-server.get("/admin/db", (req, res) => {
-  const freshRouter = jsonServer.router(dbFile);
-  res.json(freshRouter.db.getState());
 });
 
 // GET /admin/collections
