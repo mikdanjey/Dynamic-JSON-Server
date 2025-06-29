@@ -104,19 +104,35 @@ server.post("/admin/collections/:name", (req, res) => {
     return res.status(400).jsonp({ error: "Collection already exists." });
   }
 
-  // Create new collection with optional initial data or empty array
-  const initialData = Array.isArray(req.body) ? req.body : typeof req.body === "object" && req.body !== null ? [req.body] : [];
+  // Normalize input data
+  const rawData = Array.isArray(req.body) ? req.body : typeof req.body === "object" && req.body !== null ? [req.body] : [];
+
+  // Find the highest existing id (if any) to avoid duplicates
+  const maxExistingId = rawData.map(item => (typeof item.id === "number" ? item.id : 0)).reduce((max, id) => Math.max(max, id), 0);
+
+  let idCounter = maxExistingId + 1;
+
+  const initialData = rawData
+    .map(item => {
+      if (typeof item !== "object" || item === null) return null;
+      return {
+        ...item,
+        id: item.id ?? idCounter++,
+      };
+    })
+    .filter(Boolean);
+
   db.set(collectionName, initialData).write();
 
-  // Optionally, persist changes to disk immediately
+  // Persist changes to disk
   fs.writeFileSync(dbFile, JSON.stringify(db.getState(), null, 2));
 
-  // Recreate the router and re-mount it
+  // Reload router to reflect new collection
   const newRouter = jsonServer.router(dbFile);
   server._router.stack = server._router.stack.filter(layer => !(layer && layer.name === "router"));
   server.use(newRouter);
 
-  res.status(201).jsonp({ message: `Collection '${collectionName}' created.` });
+  res.status(201).jsonp({ message: `Collection '${collectionName}' created.`, count: initialData.length });
 });
 
 // DELETE /admin/collections/:name → delete a collection from db.json
