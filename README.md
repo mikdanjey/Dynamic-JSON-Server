@@ -1,5 +1,15 @@
 # Dynamic JSON Server
 
+### Clone the Dynamic JSON Server
+
+```bash
+git clone https://github.com/mikdanjey/Dynamic-JSON-Server.git Dynamic-JSON-Server
+```
+
+```bash
+cd Dynamic-JSON-Server
+```
+
 ### Install the dependencies
 
 ```bash
