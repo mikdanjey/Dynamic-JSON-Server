@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 const jsonServer = require("json-server");
+require("dotenv").config();
 
 const server = jsonServer.create();
 
@@ -10,27 +11,60 @@ const router = jsonServer.router(dbFile);
 
 const middlewares = jsonServer.defaults();
 
+const NODE_PORT = process.env.NODE_PORT || 8000;
+
+const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME || "admin";
+const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD || "admin";
+
+const decodeBase64 = str => Buffer.from(str, "base64").toString("utf-8");
+
+function basicAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Basic ")) {
+    res.setHeader("WWW-Authenticate", 'Basic realm="JSON Server"');
+    return res.status(401).json({ error: "Authentication required." });
+  }
+
+  try {
+    const base64Credentials = authHeader.split(" ")[1];
+    const decoded = decodeBase64(base64Credentials);
+    const [username, password] = decoded.split(":");
+
+    if (username === BASIC_AUTH_USERNAME && password === BASIC_AUTH_PASSWORD) {
+      return next();
+    } else {
+      return res.status(403).json({ error: "Invalid credentials." });
+    }
+  } catch {
+    return res.status(400).json({ error: "Malformed authorization header." });
+  }
+}
+
 server.use(cors("*"));
 server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
-// server.use((req, res, next) => {
-//   const isObject = obj => typeof obj === "object" && obj !== null;
+// Basic Auth for all routes
+server.use(basicAuth);
 
-//   if (["POST", "PUT", "PATCH"].includes(req.method)) {
-//     const now = new Date().toISOString();
+server.use((req, res, next) => {
+  const isObject = obj => typeof obj === "object" && obj !== null;
 
-//     if (Array.isArray(req.body)) {
-//       req.body = req.body.map(item => (isObject(item) ? { ...item, ...(req.method === "POST" ? { createdAt: now } : {}), updatedAt: now } : item));
-//     } else if (isObject(req.body)) {
-//       if (req.method === "POST" && !req.body.createdAt) {
-//         req.body.createdAt = now;
-//       }
-//       req.body.updatedAt = now;
-//     }
-//   }
-//   next();
-// });
+  if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    const now = new Date().toISOString();
+
+    if (Array.isArray(req.body)) {
+      req.body = req.body.map(item => (isObject(item) ? { ...item, ...(req.method === "POST" ? { createdAt: now } : {}), updatedAt: now } : item));
+    } else if (isObject(req.body)) {
+      if (req.method === "POST" && !req.body.createdAt) {
+        req.body.createdAt = now;
+      }
+      req.body.updatedAt = now;
+    }
+  }
+  next();
+});
 
 server.get("/admin/echo", (req, res) => {
   res.jsonp(req.query);
@@ -116,6 +150,6 @@ server.delete("/admin/collections/:name", (req, res) => {
 server.use(router);
 
 // Start the server
-server.listen(8000, () => {
+server.listen(NODE_PORT, () => {
   console.log("JSON Server is running at http://localhost:8000");
 });
