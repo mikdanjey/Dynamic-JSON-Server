@@ -53,7 +53,7 @@ pm2 start server.js --name "Dynamic JSON Server p=8000"
 GET http://localhost:8000/admin/collections
 
 ```json
-["posts", "comments", "customers", "users", "vendors", "products"]
+["posts", "comments", "customers", "users", "vendors"]
 ```
 
 ### New Collection Create
@@ -61,7 +61,10 @@ GET http://localhost:8000/admin/collections
 POST http://localhost:8000/admin/collections/products
 
 ```json
-{ "name": "Laptop", "price": 1000 }
+[
+  { "name": "Gadget 1", "price": 999 },
+  { "name": "Gadget 2", "price": 2999 }
+]
 ```
 
 ### Delete the existing Collection
