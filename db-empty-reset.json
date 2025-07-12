@@ -4,5 +4,8 @@
   "customers": [],
   "users": [],
   "vendors": [],
-  "products": []
+  "products": [],
+  "profile": {
+    "name": "Manikandan A"
+  }
 }
