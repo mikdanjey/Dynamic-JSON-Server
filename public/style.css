@@ -12,7 +12,6 @@ body {
 .container {
   max-width: 960px;
   margin: auto;
-  padding: 1rem;
 }
 
 header {
@@ -58,12 +57,12 @@ main {
 }
 
 footer {
-  margin-top: 4rem;
+  margin-top: 1rem;
   border-top: 1px solid #eee;
 }
 
 h1 {
-  margin-top: 4rem;
+  margin-top: 10px;
   font-weight: normal;
 }
 

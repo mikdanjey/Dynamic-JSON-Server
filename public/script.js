@@ -62,12 +62,12 @@ function CustomRoutesBlock({ customRoutes }) {
   }
 }
 
-window
-  .fetch("__rules")
-  .then(response => response.json())
-  .then(
-    customRoutes =>
-      (document.getElementById("custom-routes").innerHTML = CustomRoutesBlock({
-        customRoutes,
-      })),
-  );
+// window
+//   .fetch("__rules")
+//   .then(response => response.json())
+//   .then(
+//     customRoutes =>
+//       (document.getElementById("custom-routes").innerHTML = CustomRoutesBlock({
+//         customRoutes,
+//       })),
+//   );
