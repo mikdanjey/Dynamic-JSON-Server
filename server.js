@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 const jsonServer = require("json-server");
+const jwt = require("jsonwebtoken");
+
 require("dotenv").config();
 
 const server = jsonServer.create();
@@ -16,6 +18,8 @@ const NODE_PORT = process.env.NODE_PORT || 8000;
 const ENABLE_BASIC_AUTH = process.env.ENABLE_BASIC_AUTH === "true";
 const BASIC_AUTH_USERNAME = process.env.BASIC_AUTH_USERNAME || "admin";
 const BASIC_AUTH_PASSWORD = process.env.BASIC_AUTH_PASSWORD || "admin";
+
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 const decodeBase64 = str => Buffer.from(str, "base64").toString("utf-8");
 
@@ -87,6 +91,48 @@ server.get("/admin/health", (req, res) => {
 server.get("/admin/collections", (req, res) => {
   const collections = Object.keys(router.db.getState());
   res.jsonp(collections);
+});
+
+function generateToken(user) {
+  return jwt.sign(user, JWT_SECRET_KEY, { expiresIn: "7d" });
+}
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.sendStatus(401);
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, JWT_SECRET_KEY, (err, currentUser) => {
+    if (err) return res.sendStatus(403);
+    req.currentUser = currentUser;
+    next();
+  });
+}
+
+server.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const users = router.db.getState().users;
+
+  const user = users.find(u => u.email === email && u.password === password);
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+  const authUser = { ...user };
+  delete authUser.password;
+  delete authUser.createdAt;
+  delete authUser.updatedAt;
+  const token = generateToken(authUser);
+  res.json({ ...authUser, token });
+});
+
+server.get("/profile", authenticateToken, (req, res) => {
+  const users = router.db.getState().users;
+  const { id: userId } = req.currentUser;
+  const user = users.find(u => u.id === userId);
+  if (!user) return res.sendStatus(404);
+  const authUser = { ...user };
+  delete authUser.password;
+  delete authUser.createdAt;
+  delete authUser.updatedAt;
+  res.json(authUser);
 });
 
 // POST /admin/collections/:name → dynamically add new collection
