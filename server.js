@@ -24,6 +24,10 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const decodeBase64 = str => Buffer.from(str, "base64").toString("utf-8");
 
 function basicAuth(req, res, next) {
+  // Skip authentication for these paths
+  const excludedPaths = ["/profile"];
+  if (excludedPaths.includes(req.path)) return next();
+
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Basic ")) {
