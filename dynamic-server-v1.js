@@ -218,5 +218,5 @@ app.delete("/admin/collections/:name", async (req, res) => {
 
 // Start the server
 app.listen(NODE_PORT, () => {
-  console.log(`Dynamic JSON Server (v1.0.0-beta.3) is running at http://localhost:${NODE_PORT}`);
+  console.log(`Dynamic JSON Server is running at http://localhost:${NODE_PORT}`);
 });

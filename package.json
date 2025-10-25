@@ -4,6 +4,7 @@
   "description": "Dynamic JSON Server for Quick APIs",
   "copyright": "Copyright 2025 Manikandan A",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node dynamic-server.js",
     "start:v1": "node dynamic-server-v1.js",
