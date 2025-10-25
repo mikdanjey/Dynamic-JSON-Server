@@ -220,5 +220,5 @@ server.use(router);
 
 // Start the server
 server.listen(NODE_PORT, () => {
-  console.log("JSON Server is running at http://localhost:8000");
+  console.log(`Dynamic JSON Server is running at http://localhost:${NODE_PORT}`);
 });
