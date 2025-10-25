@@ -52,6 +52,8 @@ pm2 start static-server.js --name "Static JSON Server p=8000"
 
 ```bash
 json-server db.json --port 8000
+
+pm2 start bash --name json-server -- -c "npx json-server --watch db.json --port 8000"
 ```
 
 ---
