@@ -1,0 +1,9 @@
+node_modules
+.next
+build
+package-lock.json
+yarn.lock
+.swc
+.scannerwork
+.vscode
+.kiro

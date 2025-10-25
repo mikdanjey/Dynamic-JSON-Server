@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node dynamic-server.js",
+    "start:v1": "node dynamic-server-v1.js",
     "dev": "nodemon dynamic-server.js",
+    "dev:v1": "nodemon dynamic-server-v1.js",
     "prettier:check": "prettier . --check",
     "format": "prettier . --write",
     "clean": "rm -rf node_modules package-lock.json yarn.lock yarn-error.log"
@@ -16,8 +18,10 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "16.4.5",
-    "json-server": "1.0.0-beta.3",
-    "jsonwebtoken": "^9.0.2"
+    "json-server": "0.17.4",
+    "json-server-beta": "npm:json-server@1.0.0-beta.3",
+    "jsonwebtoken": "^9.0.2",
+    "lowdb": "^7.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
