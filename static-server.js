@@ -2,6 +2,7 @@ const path = require("path");
 const cors = require("cors");
 const jsonServer = require("json-server");
 const jwt = require("jsonwebtoken");
+const nanoid = require("nanoid").nanoid;
 
 require("dotenv").config();
 
@@ -66,6 +67,7 @@ if (ENABLE_BASIC_AUTH) {
 
 server.use((req, res, next) => {
   if (req.method === "POST") {
+    req.body.id = nanoid();
     req.body.createdAt = Date.now();
   }
   next();
