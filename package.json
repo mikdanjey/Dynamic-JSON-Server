@@ -1,12 +1,12 @@
 {
   "name": "dynamic-json-server",
   "version": "1.0.0",
-  "description": "Dynamic JSON Server for quick APIs",
+  "description": "Dynamic JSON Server for Quick APIs",
   "copyright": "Copyright 2025 Manikandan A",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node dynamic-server.js",
+    "dev": "nodemon dynamic-server.js",
     "prettier:check": "prettier . --check",
     "format": "prettier . --write",
     "clean": "rm -rf node_modules package-lock.json yarn.lock yarn-error.log"

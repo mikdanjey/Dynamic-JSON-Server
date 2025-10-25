@@ -43,7 +43,15 @@ cp db-empty-reset.json db.json
 ### Run in Prod Mode
 
 ```bash
-pm2 start server.js --name "Dynamic JSON Server p=8000"
+pm2 start dynamic-server.js --name "Dynamic JSON Server p=8000"
+```
+
+```bash
+pm2 start static-server.js --name "Static JSON Server p=8000"
+```
+
+```bash
+json-server db.json --port 8000
 ```
 
 ---
